@@ -80,7 +80,7 @@ jQuery(document).ready(function ($) {
                                
                             <td><h3 class='subtotal_val'>`+ (dataParse.qty[i] * dataParse.product_price[i][0]) + `</h3></td>
                             <td class='add_to_parent'>
-                            <a data-Quanitity='`+dataParse.qty[i]+`' data-productId='`+ dataParse.product_id[i]+`' href='javascript:void(0)' class='add_to_ct add_to_cart_custom'>Add To Basket</a></td>
+                            <a data-variationId='`+dataParse.variation_id[i]+`' data-Quanitity='`+ dataParse.qty[i] + `' data-productId='` + dataParse.product_id[i] + `' href='javascript:void(0)' class='add_to_ct add_to_cart_custom'>Add To Basket</a></td>
                         </tr>
                     `;
                 }
@@ -102,40 +102,42 @@ jQuery(document).ready(function ($) {
     $('#response_data').on('click', '.add_to_cart_custom', function (e) {
         e.preventDefault();
 
-        alert('Working On IT');
+        // alert('Working On IT');
 
         // $thisbutton = $(this),
-        //     $form = $thisbutton.closest('form.cart'),
-        //     id = $thisbutton.val(),
-        //     product_qty = $form.find('input[name=quantity]').val() || 1,
-        //     product_id = $form.find('input[name=product_id]').val() || id,
-        //     variation_id = $form.find('input[name=variation_id]').val() || 0;
-        // var data = {
-        //     action: 'ql_woocommerce_ajax_add_to_cart',
-        //     product_id: product_id,
-        //     product_sku: '',
-        //     quantity: product_qty,
-        //     variation_id: variation_id,
-        // };
-        // $.ajax({
-        //     type: 'post',
-        //     url: ajax_object.ajax_url,
-        //     data: data,
-        //     beforeSend: function (response) {
-        //         $thisbutton.removeClass('added').addClass('loading');
-        //     },
-        //     complete: function (response) {
-        //         $thisbutton.addClass('added').removeClass('loading');
-        //     },
-        //     success: function (response) {
-        //         if (response.error & response.product_url) {
-        //             window.location = response.product_url;
-        //             return;
-        //         } else {
-        //             $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $thisbutton]);
-        //         }
-        //     },
-        // });
+            // $form = $thisbutton.closest('form.cart'),
+            // id = $thisbutton.val(),
+            var product_qty = $(this).attr('data-Quanitity');
+            var product_id = $(this).attr('data-productId');
+            var variation_id = $(this).attr('data-variationId');
+            // alert(product_id);
+        var data = {
+            action: 'ql_woocommerce_ajax_add_to_cart',
+            product_id: product_id,
+            product_sku: '',
+            quantity: product_qty,
+            variation_id: variation_id,
+        };
+        $.ajax({
+            type: 'post',
+            url: ajax_object.ajax_url,
+            data: data,
+            beforeSend: function (response) {
+                // $thisbutton.removeClass('added').addClass('loading');
+            },
+            complete: function (response) {
+                // $thisbutton.addClass('added').removeClass('loading');
+            },
+            success: function (response) {
+                if (response.error & response.product_url) {
+                    // window.location = response.product_url;
+                    // return;
+                    alert('ok');
+                } else {
+                    $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $thisbutton]);
+                }
+            },
+        });
     });
     // #################### Add To Cart AJAx END #########################
     // #################### Add To Cart AJAx END #########################
@@ -153,6 +155,27 @@ jQuery(document).ready(function ($) {
         var round_data = parseFloat((qty * actual_price).toFixed(2));
         $('h3.subtotal_val', $(this).closest('tr')).text(round_data);
     });
+    // ################ chck uncheck selection #########################
+    // ################ chck uncheck selection #########################
+    
+    let val_timber = jQuery('#timber_post');
+    let val_none = jQuery('#gravel_none');
+    let timber_notActive = jQuery('#non_timber').val('concrete-fence-posts-intermediate');
+
+    jQuery(val_timber).click(function () {
+        jQuery(this).addClass('active-timber');
+        let check_for_class = jQuery(val_timber).hasClass('active-timber');
+        jQuery(val_none).attr('checked', true);
+        if (check_for_class) {
+            jQuery(val_none).attr('checked', true);
+        }
+    })
+    jQuery(timber_notActive).click(function () {
+        jQuery(val_timber).removeClass('active-timber');
+        jQuery(val_none).attr('checked', false);
+    })
+    // ################ chck uncheck selection End #########################
+    // ################ chck uncheck selection End #########################
 })
 
 // })

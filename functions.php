@@ -33,6 +33,10 @@ function fence_form_calculate_submit()
         $post_type = $_POST['post-type'];
         $gravel_board = $_POST['gravel-board'];
 
+        if($gravel_board == 0){
+            $gravel_board = 'fencing-materials-panel-clip';
+        }
+
         $args = array(
             'post_type' => 'product',
             'product_cat' => 'fence-panels , concrete-gravel-boards-posts, tools-misc',
@@ -75,6 +79,8 @@ function fence_form_calculate_submit()
                         if (in_array(floor($fence_height), $check)) {
                             $height1 = floor($fence_height);
                             $height1 = '6ft x ' . $height1 . 'ft high';
+                            // $matching_variation_id_1 = $variation['variation_id']; 
+                            $matching_variation_id_1 = !empty($variation['variation_id'])? $variation['variation_id'] : null; 
                         }
                         if (in_array($fence_height_for_posts, $check)) {
                             $height2 = $fence_height_for_posts;
@@ -82,6 +88,9 @@ function fence_form_calculate_submit()
                             if (is_null($height2)) {
                                 $height2 = '  ';
                             }
+                            $matching_variation_id_2 = !empty($variation['variation_id'])? $variation['variation_id'] : null; 
+                            // echo $matching_variation_id_2;
+                            // wp_die();
                         }
                        
                     }
@@ -102,6 +111,7 @@ function fence_form_calculate_submit()
 
             }
             $merge_heights = array($height1, $height2);
+            $matching_variation_id = array($matching_variation_id_1, $matching_variation_id_2);
 
 
             $data = array(
@@ -112,6 +122,7 @@ function fence_form_calculate_submit()
                 'product_price' => $price,
                 'qty' => $get_qty,
                 'height' => $merge_heights,
+                'variation_id' => $matching_variation_id,
             );
             echo json_encode($data);
 
@@ -128,4 +139,16 @@ function fence_form_calculate_submit()
 add_action('wp_ajax_nopriv_fence_form_calculate_submit', 'fence_form_calculate_submit'); // for non loggedin
 add_action('wp_ajax_fence_form_calculate_submit', 'fence_form_calculate_submit');
 // ############### Calculate form Ajax ###############
+
+// ################### Woocomemrce add to cart ###########################
+
+function ql_woocommerce_ajax_add_to_cart(){
+    echo 'ok';
+
+    wp_die();
+}
+
+add_action('wp_ajax_ql_woocommerce_ajax_add_to_cart', 'ql_woocommerce_ajax_add_to_cart'); // for non loggedin
+add_action('wp_ajax_ql_woocommerce_ajax_add_to_cart' , 'ql_woocommerce_ajax_add_to_cart');
+// ################### Woocomemrce add to cart ###########################
 ?>
